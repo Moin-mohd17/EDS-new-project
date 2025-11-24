@@ -91,7 +91,7 @@ const signUpFormConfig = {
             })(primaryBtn);
 
             innerCtx.appendChild(primaryBtn);
-
+            debugger;
             const secondaryButton = document.createElement('div');
             secondaryButton.style.display = 'flex';
             secondaryButton.style.justifyContent = 'center';
@@ -118,6 +118,8 @@ const signUpFormConfig = {
 const resetPasswordFormConfig = {
   routeSignIn: () => rootLink(CUSTOMER_LOGIN_PATH),
 };
+
+debugger;
 
 const onHeaderLinkClick = (element) => {
   const viewportMeta = document.querySelector('meta[name="viewport"]');

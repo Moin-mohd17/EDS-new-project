@@ -32,7 +32,7 @@ const showAuthModal = (event) => {
 
   const signInForm = document.createElement('div');
   signInForm.setAttribute('id', 'signin-form');
-
+  
   signInModal.onclick = (clickEvent) => {
     if (clickEvent.target === signInModal) {
       signInModal.remove();

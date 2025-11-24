@@ -1,0 +1,13 @@
+body.columns main>.section>div.commerce-account-header-wrapper {
+    margin-bottom: 0;
+}
+
+.about-us {
+    background-color: red;
+    display: flex;
+}
+
+.about-us>div {
+    background-color: red;
+    display: flex;
+}

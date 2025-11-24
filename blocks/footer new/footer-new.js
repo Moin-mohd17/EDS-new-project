@@ -28,6 +28,7 @@ function toggleStoreDropdown(sections, expanded = false) {
  * @param {Element} block The footer block element
  */
 export default async function decorate(block) {
+  // debugger;
   const root = getRootPath();
   // Load Footer as Fragment
   const footerMeta = getMetadata('footer');

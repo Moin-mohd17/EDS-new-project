@@ -1,0 +1,22 @@
+.header-new-wrapper .header-new>div>div>ul {
+    display: flex;
+    font-size: 13px;
+    list-style-type: none;
+}
+
+.header-new-wrapper>div>div>div>ul>li {
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 16px;
+    color: #000;
+}
+
+.header-new-wrapper>div>div>div>ul {
+    list-style: none;
+    gap: 18px;
+}
+
+.header-new>div>div>ul>li>ul {
+    position: absolute;
+    width: 88%;
+}

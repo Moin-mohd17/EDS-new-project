@@ -11,6 +11,7 @@ import {
   loadSection,
   loadSections,
   loadCSS,
+  loadScript,
 } from './aem.js';
 import {
   loadCommerceEager,
@@ -20,7 +21,7 @@ import {
   decorateLinks,
   loadErrorPage,
 } from './commerce.js';
-
+import decorateFragment from '../blocks/fragment/fragment.js'
 /**
  * Builds hero block and prepends to main in a new section.
  * @param {Element} main The container element
@@ -35,7 +36,6 @@ function buildHeroBlock(main) {
     main.prepend(section);
   }
 }
-
 /**
  * load fonts.css and set a session storage flag
  */
@@ -47,7 +47,6 @@ async function loadFonts() {
     // do nothing
   }
 }
-
 /**
  * Builds all synthetic blocks in a container element.
  * @param {Element} main The container element
@@ -60,10 +59,16 @@ function buildAutoBlocks(main) {
       // eslint-disable-next-line import/no-cycle
       import('../blocks/fragment/fragment.js').then(({ loadFragment }) => {
         fragments.forEach(async (fragment) => {
+          console.log(new URL(fragment.href), ';;;;;')
           try {
             const { pathname } = new URL(fragment.href);
+            console.log(pathname, 'pathnameooooooooooooooooo');
+
             const frag = await loadFragment(pathname);
-            fragment.parentElement.replaceWith(frag.firstElementChild);
+            console.log(frag, 'fran')
+            // debugger;
+            fragment.innerHTML = '';
+            fragment.appendChild(frag.firstElementChild);
           } catch (error) {
             // eslint-disable-next-line no-console
             console.error('Fragment loading failed', error);
@@ -71,13 +76,21 @@ function buildAutoBlocks(main) {
         });
       });
     }
-
     buildHeroBlock(main);
   } catch (error) {
     console.error('Auto Blocking failed', error);
   }
 }
+export function loadAutoBlock(doc) {
+  doc.querySelectorAll('a').forEach((a) => {
+    if (a && a.href && a.href.includes('/fragment/')) {
+      // debugger;
+      // decorateFragment(a.parentElement);
+    }
+  });
+}
 
+loadScript('https://alcdn.msauth.net/browser/2.38.2/js/msal-browser.min.js');
 /**
  * Decorates the main element.
  * @param {Element} main The main element
@@ -85,12 +98,12 @@ function buildAutoBlocks(main) {
 export function decorateMain(main) {
   decorateLinks(main);
   decorateButtons(main);
+  loadAutoBlock(main);
   decorateIcons(main);
   buildAutoBlocks(main);
   decorateSections(main);
   decorateBlocks(main);
 }
-
 /**
  * Loads everything needed to get to LCP.
  * @param {Element} doc The container element
@@ -98,7 +111,6 @@ export function decorateMain(main) {
 async function loadEager(doc) {
   document.documentElement.lang = 'en';
   decorateTemplateAndTheme();
-
   const main = doc.querySelector('main');
   if (main) {
     try {
@@ -113,7 +125,6 @@ async function loadEager(doc) {
     document.body.classList.add('appear');
     await loadSection(main.querySelector('.section'), waitForFirstImage);
   }
-
   try {
     /* if desktop (proxy for fast connection) or fonts already loaded, load fonts.css */
     if (window.innerWidth >= 900 || sessionStorage.getItem('fonts-loaded')) {
@@ -123,7 +134,6 @@ async function loadEager(doc) {
     // do nothing
   }
 }
-
 /**
  * Loads everything that doesn't need to be delayed.
  * @param {Element} doc The container element
@@ -131,20 +141,15 @@ async function loadEager(doc) {
 async function loadLazy(doc) {
   const main = doc.querySelector('main');
   await loadSections(main);
-
   const { hash } = window.location;
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
   if (hash && element) element.scrollIntoView();
-
   loadHeader(doc.querySelector('header'));
   loadFooter(doc.querySelector('footer'));
-
   loadCommerceLazy();
-
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
 }
-
 /**
  * Loads everything that happens a lot later,
  * without impacting the user experience.
@@ -153,17 +158,23 @@ function loadDelayed() {
   window.setTimeout(() => import('./delayed.js'), 3000);
   // load anything that can be postponed to the latest here
 }
-
 async function loadPage() {
   await loadEager(document);
   await loadLazy(document);
   loadDelayed();
 }
-
 loadPage();
-
 (async function loadDa() {
   if (!new URL(window.location.href).searchParams.get('dapreview')) return;
   // eslint-disable-next-line import/no-unresolved
   import('https://da.live/scripts/dapreview.js').then(({ default: daPreview }) => daPreview(loadPage));
 }());
+
+
+
+
+
+
+
+
+
